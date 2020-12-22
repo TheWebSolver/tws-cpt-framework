@@ -149,7 +149,7 @@ final class CPT_Filter_List {
     /**
      * Adds filter dropdown.
      * 
-     * #### It's better to use API:
+     * #### It's better to use API {@see filter_post_list_by()} as below instead of using this method:
      * ```
      * use function TheWebSolver\Register\filter_post_list_by;
      * filter_post_list_by( string $post_type, $keys = '' );
@@ -161,8 +161,8 @@ final class CPT_Filter_List {
      * * Can be useful, in some cases, to run this method if not using API.
      * 
      * **How to use this?**
-     * * Should be used with `restrict_manage_posts` action hook.
-     * * Run inside the hooked function to add filtration dropdown.
+     * * Hook with `admin_init` to parse query.
+     * * Hook with `restrict_manage_posts` to add filter.
      *
      * @param string $post_type **required** Post type key.
      * @param string $key **required** Taxonomy/Post Meta key to use for adding filteration dropdown.
@@ -271,9 +271,8 @@ final class CPT_Filter_List {
      *
      * @param string $post_type **required** Post type key.
      * @param string $key Taxonomy/Post Meta key to use for adding filteration dropdown.
-     * @param bool $post_meta Whether param _$key_ belongs to `{$prefix}_postmeta` table or `{$prefix}_posts` table. Defaults to `true`. i.e. belongs to `{$prefix}_postmeta` table (the **$key** is a custom meta key of the **$post_type**).
      * 
-     * @return string
+     * @return string|void|null
      * 
      * @since 1.0
      * 
@@ -477,14 +476,13 @@ final class CPT_Filter_List {
          * WPHOOK: Filter-> Modify how the options is outputted.
          * 
          * @param string $options
-         * @param string[] $meta_key
          * @param string $selected
          * 
          * @var string[]
          * 
          * @since 1.0
          */
-        $options = apply_filters( "hzfex_{$meta_key}_query_dropdown_result", $options, $meta_key, $selected );
+        $options = apply_filters( "hzfex_{$meta_key}_query_dropdown_result", $options, $selected );
 
         // Outputs the select dropdown filtering.
         echo '<select class="" id="'.$meta_key.'" name="'.$meta_key.'">';
