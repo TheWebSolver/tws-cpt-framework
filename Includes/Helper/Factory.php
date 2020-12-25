@@ -39,7 +39,7 @@ final class CPT_Factory implements CPT_Interface {
      * ###  CAUTION
      * #### - This will be the name of the registering type and should never be changed.
      * #### - If changed, then another type will get registered instantly.
-     * #### - All data created within this type won't be automatically migrated to changed the one.
+     * #### - All data created within this type won't be automatically migrated to the changed one.
      *
      * @var string
      * 
@@ -80,8 +80,7 @@ final class CPT_Factory implements CPT_Interface {
     /**
      * The slug of the registering type.
      * 
-     * Used in $args['rewrite']['slug']\
-     * {@see @method CPT_Factory::_set_names()}
+     * Used in $args['rewrite']['slug']
      * 
      * @var string
      * 
@@ -123,7 +122,7 @@ final class CPT_Factory implements CPT_Interface {
      * Whether to enable frontend access using URL.
      * 
      * This ensures publicly disabled registering type to be hidden\
-     * by redirecting to the desired URL when accessed directly.
+     * by redirecting to the given URL when accessed directly.
      *
      * @var bool
      * 
@@ -149,7 +148,7 @@ final class CPT_Factory implements CPT_Interface {
     public $flush_rewrite_rule = false;
 
     /**
-     * Registering Post type list filtering keys.
+     * Registering type filter key or use as filter key.
      * 
      * @var string[]|bool
      * * Taxonomies/Post Meta Keys in array if post type.
@@ -325,7 +324,7 @@ final class CPT_Factory implements CPT_Interface {
      * Private constructor to prevent direct instantiation.
      *
      * @param string $class
-     * @param string[] $name
+     * @param string[] $names
      * @param int $key_length
      * 
      * @since 1.0
@@ -442,7 +441,7 @@ final class CPT_Factory implements CPT_Interface {
      * @access public
      */
     public function assign_objects( $objects ) {
-        // Convert to array if single post type provided as string.
+        // Convert to array if object type given as string.
         $this->assigned_objects = ! is_array( $objects ) ? [$objects] : (array) $objects;
     }
 
@@ -721,9 +720,7 @@ final class CPT_Factory implements CPT_Interface {
      * @access public
      */
     private function _update_option( $prop ): bool {
-
-        $key = $this->key;
-
+        $key    = $this->key;
         $option = get_option( self::$_option );
 
         // Bail early if this registering type hasn't been saved as option.
@@ -1625,7 +1622,6 @@ final class CPT_Factory implements CPT_Interface {
      * @access public
      */
     private function _error_message( string $title, string $code, string $method, $response_code = 500 ) {
-
         // Die early if undefined method passed.
         if( ! method_exists( $this, $method ) ) {
             /* Translators -
