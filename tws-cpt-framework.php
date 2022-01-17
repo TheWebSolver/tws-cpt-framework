@@ -1,132 +1,57 @@
-<?php
+<?php // phpcs:ignore WordPress.NamingConventions
 /**
  * Plugin Name: The Web Solver Custom Post Type Framework
  * Plugin URI: https://github.com/TheWebSolver/tws-custom-post-type-framework
  * Description: <b>Custom Post Type framework</b> to register WordPress Custom Post Types and Taxonomies
- * Version: 1.0
+ * Version: 2.0
  * Author: Shesh Ghimire
  * Author URI: https://www.linkedin.com/in/sheshgh/
- * Requires at least: 5.3
- * Requires PHP: 5.6
- * Text Domain: tws-core
+ * Requires at least: 5.0
+ * Requires PHP: 7.0
  * License: GNU General Public License v3.0 (or later)
  * License URI: https://www.gnu.org/licenses/gpl-3.0.txt
  *
  * @package TheWebSolver\Core\CPT_Framework
- * 
- * -----------------------------------
- * DEVELOPED-MAINTAINED-SUPPPORTED BY
- * -----------------------------------
- * ███║     ███╗   ████████████████
- * ███║     ███║   ═════════██████╗
- * ███║     ███║        ╔══█████═╝
- *  ████████████║      ╚═█████
- * ███║═════███║      █████╗
- * ███║     ███║    █████═╝
- * ███║     ███║   ████████████████╗
- * ╚═╝      ╚═╝    ═══════════════╝
  */
+
+use TheWebSolver\CPT\Plugin;
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
 /**
- * The Web Solver Custom Post Type Framework class
- * 
- * @since 1.0
- */
-final class HZFEX_Cpt_Framework {
-    /**
-	 * Creates an instance of this class.
-	 *
-	 * @since 1.0
-	 * 
-	 * @static
-	 * 
-	 * @access public
-	 * 
-	 * @return HZFEX_Cpt_Framework
-	 */
-	public static function activate(): HZFEX_Cpt_Framework {
-        static $tws_cpt;
-		if( ! is_a( $tws_cpt, get_class() ) ) {
-            $tws_cpt = new self();
-            $tws_cpt->define_constants()->require_main_file();
-        }
-        return $tws_cpt;
-    }
-
-    /**
-     * Define plugin constants.
-     *
-     * @return HZFEX_Cpt_Framework
-     * 
-     * @since 1.0
-     * 
-     * @access public
-     */
-    public function define_constants() {
-        // define plugin textdomain.
-        // TWS Core plugin already defines it.
-        if( ! defined( 'HZFEX_TEXTDOMAIN' ) ) define( 'HZFEX_TEXTDOMAIN', 'tws-core' );
-
-        // define plugin debug mode. DEBUG: set to true when needed.
-        // TWS Core plugin already defines it.
-        if( ! defined( 'HZFEX_DEBUG_MODE' ) ) define( 'HZFEX_DEBUG_MODE', true );
-
-        define( 'HZFEX_CPT' , __( 'The Web Solver Custom Post Type' , HZFEX_TEXTDOMAIN ) );
-        define( 'HZFEX_CPT_FILE' , __FILE__ );
-        define( 'HZFEX_CPT_URL', plugin_dir_url( __FILE__ ) );
-        define( 'HZFEX_CPT_BASENAME', plugin_basename( __FILE__ ) );
-        define( 'HZFEX_CPT_PATH', plugin_dir_path( __FILE__ ) );
-        define( 'HZFEX_CPT_VERSION', '1.0' );
-        return $this;
-    }
-
-    /**
-     * Require main plugin file.
-     *
-     * @return HZFEX_Cpt_Framework
-     * 
-     * @since 1.0
-     * 
-     * @access public
-     */
-    public function require_main_file() {
-        require_once __DIR__ . '/Includes/CPT.php';
-    }
-
-    /**
-     * Initialize Plugin class.
-     *
-     * @return TheWebSolver\Core\Cpt\Plugin
-     * 
-     * @since 1.0
-     * 
-     * @access public
-     */
-    public function plugin(): TheWebSolver\Core\Cpt\Plugin {
-        return TheWebSolver\Core\Cpt\Plugin::boot();
-    }
-
-    /**
-     * Prevent direct instantiation.
-     * 
-     * @since 1.0
-     */
-    private function __construct() {}
-}
-
-/**
- * Main function to instantiate HZFEX_Cpt_Framework class.
+ * TheWebSolver CPT Framework.
  *
- * @return HZFEX_Cpt_Framework
- * 
+ * @return Plugin
+ *
  * @since 1.0
+ * @since 2.0 Autoloader and plugin instantiated.
  */
-function tws_cpt(): HZFEX_Cpt_Framework {
-    return HZFEX_Cpt_Framework::activate();
+function tws_cpt(): Plugin {
+	static $plugin = null;
+
+	if ( null === $plugin ) {
+		// Autoloader from composer or custom.
+		require_once __DIR__ . '/autoload.php';
+
+		$map    = array( 'Includes' => 'TheWebSolver\CPT' );
+		$loader = TWS_Autoloader::load();
+
+		$loader->root( __DIR__ )->path( $map )->walk();
+
+		$plugin = Plugin::load()->init();
+
+		/**
+		 * WPHOOK: Action -> fires after CPT Framework loaded.
+		 *
+		 * @param Plugin         $plugin The plugin instance.
+		 * @param TWS_Autoloader $loader The autoloader instance.
+		 * @since 2.0
+		 */
+		do_action( 'tws_cpt_framework_loaded', $plugin, $loader );
+	}
+
+	return $plugin;
 }
 
-// Initializes the plugin.
-tws_cpt()->plugin();
+tws_cpt();

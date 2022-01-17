@@ -1,0 +1,34 @@
+{
+	"name": "thewebsolver/tws-cpt-framework",
+	"description": "Custom Post Type framework to register WordPress Custom Post Types and Taxonomies.",
+	"license": "GPL-3.0-or-later",
+	"version": "2.0",
+	"authors": [
+		{
+			"name": "hsehszroc",
+			"email": "shesh@thewebsolver.com"
+		}
+	],
+	"keywords": [
+		"WordPress",
+		"Plugin",
+		"cpt",
+		"framework",
+		"custom-post-type",
+		"custom-taxonomy"
+	],
+	"autoload": {
+		"psr-4": {
+			"TheWebSolver\\CPT\\": [
+				"Includes"
+			]
+		}
+	},
+	"require": {
+		"php": ">=7.0"
+	},
+	"suggest": {
+		"thewebsolver/tws-setting-framework": "WordPress Settings (Options) API framework to manage core WordPress Settings API and implement onboarding step options easily.",
+		"thewebsolver/tws-admin-onboarding": "An easy and extendible admin onboarding wizard for WordPress Plugins and Themes."
+	}
+}

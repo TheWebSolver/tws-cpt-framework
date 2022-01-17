@@ -1,9 +1,7 @@
-<?php
+<?php // phpcs:ignore WordPress.NamingConventions
 /**
  * TheWebSolver\Core\Helper\CPT_Interface class.
- * 
- * @package TheWebSolver\Core\CPT_Framework\Interface
- * 
+ *
  * -----------------------------------
  * DEVELOPED-MAINTAINED-SUPPPORTED BY
  * -----------------------------------
@@ -15,35 +13,70 @@
  * ███║     ███║    █████═╝
  * ███║     ███║   ████████████████╗
  * ╚═╝      ╚═╝    ═══════════════╝
+ *
+ * @package TheWebSolver\Core\CPT_Framework\Interface
+ * @since   1.0
+ * @version 2.0 Developed with WPCS, namespaced autoloader usage.
  */
 
-namespace TheWebSolver\Core\Helper;
+namespace TheWebSolver\CPT\Controller;
+
+// Exit if accessed directly.
+defined( 'ABSPATH' ) || exit;
 
 /**
  * CPT Abstraction methods for consistent structure.
- * 
- * Blueprint|Grouping|Rules|Abstraction method -> to be used by Factory, Post Types & Taxonomies.
- * * @abstract @method `set_labels(array $labels)` - Set labels from api parameter.
- * * @abstract @method `set_args(array $args)` - Set args from api parameter.
- * * @abstract @method `assign_objects($objects)` - Assign objects to registering type.
- * * @abstract @method `set_redirect(array $args)` - Set redirection args from api parameter.
- * * @abstract @method `start_registration()` - Validate request and get args.
- * * @abstract @method `frontend_redirect()` - Redirect frontend URLs to prevent direct access.
- * * @abstract @method `register()` - 
- * ** Register type,
- * ** add factory to global var of respective registering type, and
- * ** add `do_action` hook with respective registering type key passing `CPT_Factory` as an arg.
- * * @abstract @method `finish_registration()` - additional execution after registration.
- * 
+ *
+ * Blueprint|Grouping|Rules|Abstraction method to be used by Factory, Post Types & Taxonomies.
+ *
  * @since 1.0
  */
 interface CPT_Interface {
-    public function set_labels(array $labels);
-    public function set_args(array $args);
-    public function assign_objects( $objects );
-    public function set_redirect(array $args);
-    public function start_registration();
-    public function frontend_redirect();
-    public function register();
-    public function finish_registration();
+	/**
+	 * Sets labels for the registering type.
+	 *
+	 * @param array $labels Labels in an array.
+	 */
+	public function labels( array $labels );
+
+	/**
+	 * Sets arguments for the registering type.
+	 *
+	 * @param array $args Args in an array.
+	 */
+	public function args( array $args );
+
+	/**
+	 * Sets post-type or taxonomy for the registering type.
+	 *
+	 * @param string|string[] $objects Single object in string, multiple in an array.
+	 */
+	public function assign( $objects );
+
+	/**
+	 * Sets frontend page redirection of the registering type singular or archive page.
+	 *
+	 * @param array $args The redirection args.
+	 */
+	public function redirect( array $args );
+
+	/**
+	 * Registers the type.
+	 */
+	public function start();
+
+	/**
+	 * Redirects registering type and it's archive page.
+	 */
+	public function frontend_redirect();
+
+	/**
+	 * Starts registration hook.
+	 */
+	public function register();
+
+	/**
+	 * Finishes factory registration process.
+	 */
+	public function finish();
 }
